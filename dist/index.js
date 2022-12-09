@@ -5822,18 +5822,9 @@ async function run() {
 
   // set up API client
   const pdClient = pd.api({ token: pdToken });
-  const params = {
-    "schedule_ids[]": scheduleId,
-    since: startDate,
-    until: endDate,
-    limit: 1,
-  };
-  const queryParams = Object.entries(params)
-    .map(([k, v]) => `${k}=${v}`)
-    .join("&");
-
   const url = `/schedules/${scheduleId}/users?since=${startDate}&until=${endDate}`
   core.info(`Url: ${url}`);
+
   pdClient
     .get(url)
     .then(({ resource }) => {
@@ -5855,7 +5846,7 @@ async function run() {
       }
     })
     .catch((error) => {
-      core.setFailed(`❌ Unable to fetch on-call data: ${error.message}`);
+      core.setFailed(`❌ Unable to fetch on-call data: ${JSON.stringify(error)}`);
     });
 }
 
