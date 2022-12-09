@@ -1,4 +1,3 @@
-const pd = require("@pagerduty/pdjs");
 const core = require("@actions/core");
 const fetch = require('node-fetch');
 
@@ -13,9 +12,6 @@ async function run() {
     core.setFailed("An end date is required when a start date is passed in");
   }
 
-  // set up API client
-  const pdClient = pd.api({ token: pdToken });
-
   const requestOptions = {
     method: 'GET',
     headers: {
@@ -28,6 +24,7 @@ async function run() {
 
   var requestUrl = "https://api.pagerduty.com/schedules/" + scheduleId + "/users?since=" + startDate + "&until=" + endDate;
   core.info(`Url: ${requestUrl}`);
+
   fetch(requestUrl, requestOptions)
     .then(response => response.json())
     .then(result => {
