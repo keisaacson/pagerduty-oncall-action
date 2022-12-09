@@ -14,32 +14,27 @@ async function run() {
 
   // set up API client
   const pdClient = pd.api({ token: pdToken });
-  const url = `/schedules/${scheduleId}/users?since=${startDate}&until=${endDate}`
-  core.info(`Url: ${url}`);
 
-  pdClient
-    .get(url)
-    .then(({ resource }) => {
-      core.info(`Resource: ${resource}`)
-      // `resource` should be a list of oncall entries
-      if (resource.length > 0) {
-        core.debug(`Oncalls found: ${JSON.stringify(resource)}`);
+  const requestOptions = {
+    method: 'GET',
+    headers: {
+        "Accept": "application/vnd.pagerduty+json;version=2",
+        "Content-Type": "application/json",
+        "Authorization": "Token token=" + pdToken
+        },
+    redirect: 'follow'
+  };
 
-        const person = resource[0]["user"]["summary"];
-
-        if (typeof person !== "undefined") {
-          core.info(`🎉 On-call person found: ${person}`);
-          core.setOutput("person", person);
-        } else {
-          core.setFailed("❓ Could not parse on-call entry");
-        }
-      } else {
-        core.setFailed("❓ No one is on the schedule");
-      }
+  var requestUrl = "https://api.pagerduty.com/schedules/" + scheduleId + "/users?since=" + startDate + "&until=" + endDate;
+  core.info(`Url: ${requestUrl}`);
+  fetch(requestUrl, requestOptions)
+    .then(response => response.json())
+    .then(result => {
+      const person = result.users[0].name;
+      core.info(`🎉 On-call person found: ${person}`);
+      core.setOutput("person", person);
     })
-    .catch((error) => {
-      core.setFailed(error);
-    });
+    .catch(error => console.log('error', error));
 }
 
 run();
