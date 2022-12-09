@@ -1,5 +1,6 @@
 const pd = require("@pagerduty/pdjs");
 const core = require("@actions/core");
+const fetch = require('node-fetch');
 
 async function run() {
   // parse action inputs
