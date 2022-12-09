@@ -24,8 +24,9 @@ async function run() {
     .map(([k, v]) => `${k}=${v}`)
     .join("&");
 
+  core.info("Running new code");
   pdClient
-    .get("/schedules/" + scheduleId + "/users?since=" + startDate + "&until=" + endDate)
+    .get(`/schedules/${scheduleId}/users?since=${startDate}&until=${endDate}`)
     .then(({ resource }) => {
       // `resource` should be a list of oncall entries
       if (resource.length > 0) {
@@ -44,7 +45,7 @@ async function run() {
       }
     })
     .catch((error) => {
-      core.setFailed(`❌ Unable to fetch on-call data: ${error}`);
+      core.setFailed(`❌ Unable to fetch on-call data: ${JSON.stringify(error)}`);
     });
 }
 
