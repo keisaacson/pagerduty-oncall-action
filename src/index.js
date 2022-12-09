@@ -25,7 +25,7 @@ async function run() {
     .join("&");
 
   pdClient
-    .get(`/oncalls?${queryParams}`)
+    .get("/schedules/" + scheduleId + "/users?since=" + startDate + "&until=" + endDate)
     .then(({ resource }) => {
       // `resource` should be a list of oncall entries
       if (resource.length > 0) {
