@@ -5846,7 +5846,7 @@ async function run() {
       }
     })
     .catch((error) => {
-      core.setFailed(`❌ Unable to fetch on-call data: ${JSON.stringify(error)}`);
+      core.setFailed(error);
     });
 }
 
